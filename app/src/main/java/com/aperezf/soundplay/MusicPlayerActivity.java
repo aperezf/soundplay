@@ -38,7 +38,7 @@ public class MusicPlayerActivity extends AppCompatActivity {
     private View.OnClickListener onPlayPauseListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if (player.isPlaying()){
+            if (!player.isPlaying()){
                 player.resumeMedia();
                 btnPlayPause.setImageResource(android.R.drawable.ic_media_pause);
             }
@@ -65,9 +65,17 @@ public class MusicPlayerActivity extends AppCompatActivity {
     };
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        mSeekbarUpdateHandler.removeCallbacks(mUpdateSeekbar);
+        Log.i(TAG,"onPause");
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_music_player);
+        Log.i(TAG,"onCreate");
 
         btnPlayPause = findViewById(R.id.btnPlayPause);
         btnPrev = findViewById(R.id.btnPrev);
@@ -99,5 +107,30 @@ public class MusicPlayerActivity extends AppCompatActivity {
 
         mSeekbarUpdateHandler.postDelayed(mUpdateSeekbar, 0);
 
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        Log.i(TAG,"onSaveInstanceState");
+        savedInstanceState.putBoolean("ServiceState", serviceBound);
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        serviceBound = savedInstanceState.getBoolean("ServiceState");
+        Log.i(TAG,"onRestoreInstanceState");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.i(TAG,"onDestroy");
+        if (serviceBound) {
+            unbindService(serviceConnection);
+            //service is active
+            //player.stopSelf();
+        }
     }
 }

@@ -27,13 +27,13 @@ public class MainActivity extends AppCompatActivity {
 
     public static final String TAG = "MainActivity";
 
-    private List<MediaData> mediaDataList;
+    private ArrayList<MediaData> mediaDataList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        
+
         IndexFastScrollRecyclerView rvListMedias = findViewById(R.id.fast_scroller_recycler);
         rvListMedias.setIndexbarMargin(0);
         rvListMedias.setIndexBarColor(R.color.colorPrimary);
@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
             public void onItemClick(int pos) {
                 Intent intent = new Intent(MainActivity.this, MusicPlayerActivity.class);
                 intent.putExtra("media", mediaDataList.get(pos).getPathFile());
+                intent.putExtra("playlist",mediaDataList);
                 startActivity(intent);
             }
         });

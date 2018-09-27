@@ -8,6 +8,7 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Binder;
 import android.os.IBinder;
+import android.provider.MediaStore;
 import android.util.Log;
 
 import java.io.IOException;
@@ -162,7 +163,8 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
     }
 
     private void initMediaPlayer(){
-        mediaPlayer = new MediaPlayer();
+        if (mediaPlayer == null)
+            mediaPlayer = new MediaPlayer();
 
         mediaPlayer.setOnCompletionListener(this);
         mediaPlayer.setOnErrorListener(this);
